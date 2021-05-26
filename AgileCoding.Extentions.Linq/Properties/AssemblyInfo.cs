@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("AgileCoding.Extentions.Linq")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Extenions on Linq")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("AgileCoding.Extentions.Linq")]
-[assembly: AssemblyCopyright("Copyright ©  2019")]
+[assembly: AssemblyProduct("AgileCoding")]
+[assembly: AssemblyCopyright("Copyright (c) Ernie Gunning 2021")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

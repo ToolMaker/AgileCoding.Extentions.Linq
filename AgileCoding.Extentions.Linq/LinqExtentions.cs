@@ -1,12 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
 namespace AgileCoding.Extentions.Linq
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+
     public static class LinqExtentions
     {
-        public static TSource TakeTop<TSource>(this List<TSource> source)
+        public static TSource? TakeTop<TSource>(this List<TSource> source)
         {
             if (source.Count == 0)
             {
@@ -26,7 +26,9 @@ namespace AgileCoding.Extentions.Linq
             {
                 throw new ArgumentNullException("source");
             }
-            IList<TSource> list = source as IList<TSource>;
+
+            IList<TSource>? list = source as IList<TSource>;
+
             if (list != null)
             {
                 switch (list.Count)
@@ -66,13 +68,21 @@ namespace AgileCoding.Extentions.Linq
             {
                 throw new ArgumentNullException("source");
             }
-            IList<TSource> list = source as IList<TSource>;
+            IList<TSource>? list = source as IList<TSource>;
             if (list != null)
             {
                 switch (list.Count)
                 {
                     case 0:
-                        throw (TNoElementsExceptionType)Activator.CreateInstance(typeof(TNoElementsExceptionType), noElementsMessage);
+                        var noElementException = Activator.CreateInstance(typeof(TNoElementsExceptionType), noElementsMessage) as TNoElementsExceptionType;
+                        if(noElementException != null)
+                        {
+                            throw noElementException;
+                        }
+                        else
+                        {
+                            throw new InvalidOperationException(noElementsMessage);
+                        }
                     case 1:
                         return list[0];
                 }
@@ -83,7 +93,15 @@ namespace AgileCoding.Extentions.Linq
                 {
                     if (!enumerator.MoveNext())
                     {
-                        throw (TNoElementsExceptionType)Activator.CreateInstance(typeof(TNoElementsExceptionType), noElementsMessage);
+                        var noElementException = Activator.CreateInstance(typeof(TNoElementsExceptionType), noElementsMessage) as TNoElementsExceptionType;
+                        if (noElementException != null)
+                        {
+                            throw noElementException;
+                        }
+                        else
+                        {
+                            throw new InvalidOperationException(noElementsMessage);
+                        }
                     }
                     TSource current = enumerator.Current;
                     if (!enumerator.MoveNext())
@@ -92,17 +110,25 @@ namespace AgileCoding.Extentions.Linq
                     }
                 }
             }
-            throw (TMoreThanOnceExceptionType)Activator.CreateInstance(typeof(TMoreThanOnceExceptionType), moreThanOneMatchMessage);
+            var exception = Activator.CreateInstance(typeof(TMoreThanOnceExceptionType), moreThanOneMatchMessage) as TMoreThanOnceExceptionType;
+            if (exception != null)
+            {
+                throw exception;
+            }
+            else
+            {
+                throw new InvalidOperationException(moreThanOneMatchMessage);
+            }
         }
 
-        public static TSource SingleOrDefault<TSource>(this IEnumerable<TSource> source, string moreThanOneMatchMessage = "MoreThanOneMatch")
+        public static TSource? SingleOrDefault<TSource>(this IEnumerable<TSource> source, string moreThanOneMatchMessage = "MoreThanOneMatch")
         {
             if (source == null)
             {
                 throw new ArgumentNullException("source");
             }
 
-            IList<TSource> list = source as IList<TSource>;
+            IList<TSource>? list = source as IList<TSource>;
             if (list != null)
             {
                 switch (list.Count)
@@ -131,13 +157,13 @@ namespace AgileCoding.Extentions.Linq
             throw new InvalidOperationException(moreThanOneMatchMessage);
         }
 
-        public static TSource SingleOrDefault<TSource, TMoreThanOnceExceptionType>(this IEnumerable<TSource> source, string noElementsMessage = "NoElements", string moreThanOneMatchMessage = "MoreThanOneMatch") where TMoreThanOnceExceptionType : Exception
+        public static TSource? SingleOrDefault<TSource, TMoreThanOnceExceptionType>(this IEnumerable<TSource> source, string noElementsMessage = "NoElements", string moreThanOneMatchMessage = "MoreThanOneMatch") where TMoreThanOnceExceptionType : Exception
         {
             if (source == null)
             {
                 throw new ArgumentNullException("source");
             }
-            IList<TSource> list = source as IList<TSource>;
+            IList<TSource>? list = source as IList<TSource>;
             if (list != null)
             {
                 switch (list.Count)
@@ -163,7 +189,15 @@ namespace AgileCoding.Extentions.Linq
                     }
                 }
             }
-            throw (TMoreThanOnceExceptionType)Activator.CreateInstance(typeof(TMoreThanOnceExceptionType), moreThanOneMatchMessage);
+            var exception = Activator.CreateInstance(typeof(TMoreThanOnceExceptionType), moreThanOneMatchMessage) as TMoreThanOnceExceptionType;
+            if (exception != null)
+            {
+                throw exception;
+            }
+            else
+            {
+                throw new InvalidOperationException(moreThanOneMatchMessage);
+            }
         }
 
         //public static TSource Any<TSource, TFoundAnyItemsExceptionType>(this IEnumerable<TSource> source,
@@ -184,21 +218,28 @@ namespace AgileCoding.Extentions.Linq
         //        return (TSource)source;
         //    }
         //}
-
-        public static TSource First<TSource, TNoElementsExceptionType>(this IEnumerable<TSource> source, string noElementsMessage = "NoElements") 
-            where TNoElementsExceptionType : Exception 
+        public static TSource? First<TSource, TNoElementsExceptionType>(this IEnumerable<TSource> source, string noElementsMessage = "NoElements")
+            where TNoElementsExceptionType : Exception
         {
             if (source == null)
             {
                 throw new ArgumentNullException("source");
             }
 
-            IList<TSource> list = source as IList<TSource>;
+            IList<TSource>? list = source as IList<TSource>;
             if (list != null)
             {
                 if (list.Count == 0)
                 {
-                    throw (TNoElementsExceptionType)Activator.CreateInstance(typeof(TNoElementsExceptionType), noElementsMessage);
+                    var exception = Activator.CreateInstance(typeof(TNoElementsExceptionType), noElementsMessage) as TNoElementsExceptionType;
+                    if(exception != null)
+                    {
+                        throw exception;
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException(noElementsMessage);
+                    }
                 }
                 else if (list.Count >= 1)
                 {
@@ -215,11 +256,19 @@ namespace AgileCoding.Extentions.Linq
                 {
                     if (!enumerator.MoveNext())
                     {
-                        throw (TNoElementsExceptionType)Activator.CreateInstance(typeof(TNoElementsExceptionType), noElementsMessage);
+                        var exception = Activator.CreateInstance(typeof(TNoElementsExceptionType), noElementsMessage) as TNoElementsExceptionType;
+                        if (exception != null)
+                        {
+                            throw exception;
+                        }
+                        else
+                        {
+                            throw new InvalidOperationException(noElementsMessage);
+                        }
                     }
                     else if (!enumerator.MoveNext())
                     {
-                         return enumerator.Current;
+                        return enumerator.Current;
                     }
                 }
             }
